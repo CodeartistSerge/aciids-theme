@@ -13,7 +13,7 @@
 		if ( ! $order_id ) return;
 		// Allow code execution only once
 		if( ! get_post_meta( $order_id, '_thankyou_action_done', true ) ) {
-			@file_put_contents( __DIR__ . '/test.log', "Order ID: $order_id\n---\n", FILE_APPEND );
+			@file_put_contents( __DIR__ . '/test.log', "No meta have been found\n", FILE_APPEND );
 			$order = wc_get_order( $order_id );
 			$order_key = $order->get_order_key();
 			$order_key = $order->get_order_number();
