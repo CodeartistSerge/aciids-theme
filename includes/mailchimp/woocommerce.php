@@ -25,15 +25,16 @@
 				'tags' => $tags,
 			];
 			$ch = curl_init($url);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_POST, true);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+
 			curl_setopt($ch, CURLOPT_USERPWD, 'user:' . $apiKey);
-			curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, [
 				'Content-Type: application/json'
 			]);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 			$response = curl_exec($ch);
 			$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			curl_close($ch);
@@ -75,10 +76,11 @@
 						$email = $order->get_billing_email();
 						$apiKey = $mcIni['MAILCHIMP_API_KEY'];
 						$tags = [$tag];
+						$today = date('Y-m-d H:i:s');
 						if ( ca_mailchimp_subscribe( $email, $list_id, $tags, $apiKey ) ) {
-							@file_put_contents( __DIR__ . '/test.log', "Subscribed $email to tag '$tag' for product ID $product_id in order $order_key\n", FILE_APPEND );
+							@file_put_contents( __DIR__ . '/test.log', "$today | Subscribed $email to tag '$tag' for product ID $product_id in order $order_key\n", FILE_APPEND );
 						} else {
-							@file_put_contents( __DIR__ . '/test.log', "Failed to subscribe $email to tag '$tag' for product ID $product_id in order $order_key\n", FILE_APPEND );
+							@file_put_contents( __DIR__ . '/test.log', "$today | Failed to subscribe $email to tag '$tag' for product ID $product_id in order $order_key\n", FILE_APPEND );
 						}
 					}
 				}
@@ -87,4 +89,4 @@
 			$order->update_meta_data( '_thankyou_action_done', true );
 			$order->save();
 		}
-	}, 10, 1);
+	}, 99999, 1);
