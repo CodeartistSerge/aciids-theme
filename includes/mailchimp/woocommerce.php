@@ -17,8 +17,9 @@
 					--user "anystring:${apikey}"' \
 					-d '{"email_address":"","email_type":"","status":"subscribed","merge_fields":{},"interests":{},"language":"","vip":false,"location":{"latitude":0,"longitude":0},"marketing_permissions":[],"ip_signup":"","timestamp_signup":"","ip_opt":"","timestamp_opt":"","tags":[]}'
 			*/
+			$memberId = md5(strtolower($email));
 			$dc = substr($apiKey, strpos($apiKey, '-') + 1);
-			$url = "https://$dc.api.mailchimp.com/3.0/lists/$list_id/members";
+			$url = "https://$dc.api.mailchimp.com/3.0/lists/$list_id/members/$memberId";
 			$data = [
 				'email_address' => $email,
 				'status' => 'subscribed',
