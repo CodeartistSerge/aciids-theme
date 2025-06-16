@@ -11,4 +11,4 @@ function avada_lang_setup() {
 }
 add_action( 'after_setup_theme', 'avada_lang_setup' );
 
-require_once('./includes/mailchimp/woocommerce.php');
+require_once('includes/mailchimp/woocommerce.php');
