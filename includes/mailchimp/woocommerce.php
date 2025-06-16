@@ -12,10 +12,7 @@
 		if (!$apiKey) return false;
 		try {
 			/*
-				curl -X POST \
-					'https://${dc}.api.mailchimp.com/3.0/lists/{list_id}/members' \
-					--user "anystring:${apikey}"' \
-					-d '{"email_address":"","email_type":"","status":"subscribed","merge_fields":{},"interests":{},"language":"","vip":false,"location":{"latitude":0,"longitude":0},"marketing_permissions":[],"ip_signup":"","timestamp_signup":"","ip_opt":"","timestamp_opt":"","tags":[]}'
+				ENDPOINT: https://${dc}.api.mailchimp.com/3.0/lists/{list_id}/members
 			*/
 			$memberId = md5(strtolower($email));
 			$dc = substr($apiKey, strpos($apiKey, '-') + 1);
@@ -44,11 +41,13 @@
 				return true;
 			} else {
 				// Handle error
-				@file_put_contents( __DIR__ . '/test.log', "Mailchimp API error: $response\n", FILE_APPEND );
+				$today = date('Y-m-d H:i:s');
+				@file_put_contents( __DIR__ . '/error.log', "$today | Mailchimp API error: $response\n", FILE_APPEND );
 				return false;
 			}
 		} catch (\Exception $e) {
-			@file_put_contents( __DIR__ . '/test.log', "Exception while subscribing to Mailchimp: " . $e->getMessage() . "\n", FILE_APPEND );
+			$today = date('Y-m-d H:i:s');
+			@file_put_contents( __DIR__ . '/error.log', "$today | Exception while subscribing to Mailchimp: " . $e->getMessage() . "\n", FILE_APPEND );
 			return false;
 		}
 	}
@@ -72,17 +71,11 @@
 				$product_id = $product->get_id();
 				foreach ( MAILCHIMP_TAG_TO_PRODUCTS as $tag => $product_ids ) {
 					if ( in_array( $product_id, $product_ids ) ) {
-						// TODO: Add tag to Mailchimp
 						$list_id = $mcIni['MAILCHIMP_LIST_ID'];
 						$email = $order->get_billing_email();
 						$apiKey = $mcIni['MAILCHIMP_API_KEY'];
 						$tags = [$tag];
-						$today = date('Y-m-d H:i:s');
-						if ( ca_mailchimp_subscribe( $email, $list_id, $tags, $apiKey ) ) {
-							@file_put_contents( __DIR__ . '/test.log', "$today | Subscribed $email to tag '$tag' for product ID $product_id in order $order_key\n", FILE_APPEND );
-						} else {
-							@file_put_contents( __DIR__ . '/test.log', "$today | Failed to subscribe $email to tag '$tag' for product ID $product_id in order $order_key\n", FILE_APPEND );
-						}
+						ca_mailchimp_subscribe( $email, $list_id, $tags, $apiKey );
 					}
 				}
 			}
