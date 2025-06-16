@@ -9,8 +9,9 @@
 	]);
 
 	add_action('woocommerce_thankyou', function( $order_id ) {
-		@file_put_contents( __DIR__ . '/test.log', "Order ID: $order_id\n---\n", FILE_APPEND );
+		@file_put_contents( __DIR__ . '/test.log', "Order ID: $order_id\n", FILE_APPEND );
 		if ( ! $order_id ) return;
+		@file_put_contents( __DIR__ . '/test.log', "Order meta: ".$get_post_meta( $order_id, '_thankyou_action_done', true ). "\n---\n", FILE_APPEND );
 
 		// Allow code execution only once
 		if( ! get_post_meta( $order_id, '_thankyou_action_done', true ) ) {
