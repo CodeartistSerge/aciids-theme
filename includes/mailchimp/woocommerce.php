@@ -8,7 +8,12 @@
 		],
 	]);
 
-	function ca_mailchimp_subscribe( $email, $list_id, $tags = [], $apiKey ) {
+	function ca_mailchimp_subscribe( $email, $list_id, $tags = [], $mergeFields = [
+		'EMAIL' => '',
+		'LNAME' => '',
+		'FNAME' => '',
+		'SMSPHONE' => '',
+	], $apiKey ) {
 		if (!$apiKey) return false;
 		try {
 			/*
@@ -22,6 +27,12 @@
 				'status' => 'subscribed',
 				'tags' => $tags,
 				'skip_merge_validation' => true,
+				'merge_fields' => [
+					'EMAIL' => '',
+					'LNAME' => '',
+					'FNAME' => '',
+					'SMSPHONE' => '',
+				],
 			];
 			$ch = curl_init($url);
 
@@ -61,8 +72,6 @@
 			if( !is_array( $mcIni ) || !array_key_exists('MAILCHIMP_API_KEY', $mcIni ) || !$mcIni['MAILCHIMP_API_KEY'] ) return;
 			if( !is_array( $mcIni ) || !array_key_exists('MAILCHIMP_LIST_ID', $mcIni ) || !$mcIni['MAILCHIMP_LIST_ID'] ) return;
 			$order = wc_get_order( $order_id );
-			$order_key = $order->get_order_key();
-			$order_key = $order->get_order_number();
 
 			$isPaid = $order->is_paid();
 
@@ -76,7 +85,13 @@
 						$email = $order->get_billing_email();
 						$apiKey = $mcIni['MAILCHIMP_API_KEY'];
 						$tags = [$tag];
-						ca_mailchimp_subscribe( $email, $list_id, $tags, $apiKey );
+						$mergeFields = [
+							'EMAIL' => $email,
+							'LNAME' => $order->get_billing_last_name(),
+							'FNAME' => $order->get_billing_first_name(),
+							'SMSPHONE' => $order->get_billing_phone(),
+						];
+						ca_mailchimp_subscribe( $email, $list_id, $tags, $mergeFields, $apiKey );
 					}
 				}
 			}
