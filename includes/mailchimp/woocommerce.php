@@ -21,6 +21,7 @@
 				'email_address' => $email,
 				'status' => 'subscribed',
 				'tags' => $tags,
+				'skip_merge_validation' => true,
 			];
 			$ch = curl_init($url);
 
