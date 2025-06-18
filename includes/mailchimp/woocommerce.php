@@ -27,12 +27,7 @@
 				'status' => 'subscribed',
 				'tags' => $tags,
 				'skip_merge_validation' => true,
-				'merge_fields' => [
-					'EMAIL' => '',
-					'LNAME' => '',
-					'FNAME' => '',
-					'SMSPHONE' => '',
-				],
+				'merge_fields' => $mergeFields,
 			];
 			$ch = curl_init($url);
 
