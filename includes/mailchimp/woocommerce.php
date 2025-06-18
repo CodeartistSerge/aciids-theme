@@ -12,7 +12,7 @@
 		'EMAIL' => '',
 		'LNAME' => '',
 		'FNAME' => '',
-		'SMSPHONE' => '',
+		// 'SMSPHONE' => '',
 	], $apiKey ) {
 		if (!$apiKey) return false;
 		try {
