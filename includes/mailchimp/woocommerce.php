@@ -84,7 +84,7 @@
 							'EMAIL' => $email,
 							'LNAME' => $order->get_billing_last_name(),
 							'FNAME' => $order->get_billing_first_name(),
-							'SMSPHONE' => $order->get_billing_phone(),
+							// 'SMSPHONE' => $order->get_billing_phone(),
 						];
 						ca_mailchimp_subscribe( $email, $list_id, $tags, $mergeFields, $apiKey );
 					}
